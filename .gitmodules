@@ -1,0 +1,6 @@
+[submodule "flair"]
+	path = submodules/flair
+	url = https://github.com/BrooksLabUCSC/flair.git
+[submodule "submodules/EpiNano"]
+	path = submodules/EpiNano
+	url = https://github.com/enovoa/EpiNano.git
