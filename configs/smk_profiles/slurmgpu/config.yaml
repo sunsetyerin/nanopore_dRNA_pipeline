@@ -1,0 +1,3 @@
+jobs: 2
+
+cluster: "sbatch -t {resources.time_limit} -J {rule} --mem={resources.mem_mb} -o logs/slurm/{rule}_{wildcards}.o -e logs/slurm/{rule}_{wildcards}.e"

@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+# coding=utf-8
+
+"""
+Input functions for sample_process.snake rules.
+"""
+
+__author__ = "Jean-Michel Garant"
+__copyright__ = "Copyright (C) 2020, " + __author__
+__email__ = "jmgarant@bcgsc.ca"
+__license__ = "GPLv3"
+
+
+def fast5_directory(wildcards):
+    return config["samples"][wildcards.sample]["raw_fast5_dir"]
+
+
+def fast5_files(wildcards):
+    file_list = expand(
+        os.path.join(
+            config["samples"][wildcards.sample]["raw_fast5_dir"],
+            "{fast5}.fast5"
+            ),
+        fast5=glob_wildcards(os.path.join(
+            config["samples"][wildcards.sample]["raw_fast5_dir"],
+            "{fast5}.fast5"
+            )).fast5
+        )
+    return file_list
+
+
+def aggregate_csv_names(wildcards):
+    """
+    Custom input function to include all polya_tails.csv files (one per
+    .fast5) as a single large input to the concatenator job.
+    """
+    guppy_fast5_dir = checkpoints.guppy_basecall.get(**wildcards).output[0]
+    return expand(
+        os.path.join(
+            "data",
+            "{sample}",
+            "tailfindr",
+            "tmp_csv",
+            "{fast5}",
+            "polya_tails.csv"
+            ),
+        sample=wildcards.sample,
+        fast5=glob_wildcards(os.path.join(
+            guppy_fast5_dir,
+            "{fast5}.fast5")).fast5)
+
+
+def aggregate_fastq(wildcards):
+    """
+    Custom input from fastq basecalled by Guppy.
+    """
+    guppy_fastq_dir = checkpoints.guppy_basecall.get(**wildcards).output[1]    
+    globbed = glob_wildcards(os.path.join(
+        guppy_fastq_dir,
+        "_".join(["{fastq}", "{no}", "{callers}.fastq.gz"])))
+    return expand(
+        os.path.join(
+            "data",
+            wildcards.sample,
+            "guppy_basecall",
+            "pass",
+            "_".join(["{fastq}", "{no}", "{callers}.fastq.gz"])),
+        zip,
+        fastq=globbed.fastq,
+        no=globbed.no,
+        callers=globbed.callers)
+
+
+def get_albacore_epinano(wildcards):
+    """
+    Custom input from fastq basecalled by Albacore.
+    """
+    albacore_dir = checkpoints.albacore_basecall.get(**wildcards).output[0]    
+    globbed = glob_wildcards(os.path.join(
+        albacore_dir,
+        "workspace",
+        "{fastq}.fastq"))
+    return os.path.join(
+        "data",
+        wildcards.sample,
+        "epinano",
+        "".join([globbed.fastq[0], ".tsv.per.site.var.csv"]))
+
+### TODO To be removed
+def read_map(wildcards):
+    return os.path.join(
+        "data",
+        wildcards.sample,
+        "flair",
+        config["samples"][wildcards.sample]["flair"]["reads_fastq"],
+        ).replace(".fastq",".collapsed.isoform.read.map.txt")
+### To be removed
+
+
+def gene_expression(wildcards):
+    return config["samples"][wildcards.sample]["short_read"]["expression_file"]

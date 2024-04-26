@@ -1,0 +1,41 @@
+# To make sure we comply with ONT softwares license we must require users
+# to obtain their copy of Guppy v4.0.11 and Albacore v2.3.4 package for python
+# 3.6. See https://community.nanoporetech.com/downloads 
+# https://mirror.oxfordnanoportal.com/software/analysis/ont-guppy_4.0.11_linux64.tar.gz
+# https://mirror.oxfordnanoportal.com/software/analysis/ont_albacore-2.3.4-cp36-cp36m-manylinux1_x86_64.whl
+
+# References
+genomic_fasta: data/hg38_no_alt.fa
+annotation_file: data/Homo_sapiens.GRCh38.87.chr.gtf
+chr_sizes: data/hg38_no_alt.chrmsizes.tab
+
+# Tools specifics
+guppy:
+    compressed_tarball_path: /projects/jmgarant_prj/results/direct_rna/bin/ont-guppy_4.0.11_linux64.tar.gz
+    flowcell_config: rna_r9.4.1_70bps_hac.cfg
+    device_string: cuda:0 cuda:1 cuda:2 cuda:3
+
+tailfindr:
+    tail_plots.html: False
+    debug_traces: False
+    cores_per_tailfindr_jobs: 48
+
+flair:
+    threads: 48
+
+albacore:
+    whl_package_path: /projects/jmgarant_prj/results/direct_rna/bin/ont_albacore-2.3.4-cp36-cp36m-manylinux1_x86_64.whl
+    flowcell: FLO-MIN106
+    kit: SQK-RNA001
+    threads: 48
+
+# Samples and files
+samples:
+    COLO829:
+        raw_fast5_dir: /projects/sbs_primary1/promethion1/data/20191009_DRS_COLO829/20191009_DRS_COLO829/20191009_2100_1-E9-H9_PAE04874_fb21be40/fast5_pass
+        short_read:
+            expression_file: /projects/cgrisdale_prj/POG/Nanopore/COLO829/Expression/Colo829_TPM_combined.tsv
+    COLO829BL:
+        raw_fast5_dir: /projects/sbs_primary1/promethion1/data/B86133-1/B86133-1/20191030_2158_1-E3-H3_PAE15768_7fdb5177/fast5_pass
+        short_read:
+            expression_file:

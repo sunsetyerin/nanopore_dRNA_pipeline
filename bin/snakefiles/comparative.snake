@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+# coding=utf-8
+
+__author__ = "Jean-Michel Garant"
+__copyright__ = "Copyright (C) 2020, " + __author__
+__email__ = "jmgarant@bcgsc.ca"
+__license__ = "GPLv3"
+
+include: "sample_process.snake"
+
+configfile: "configs/sample_config.yaml"
+
+rule all:
+    """
+    Generate default target files.
+    """
+    input:
+        os.path.join(
+            "data",
+            "comparative",
+            "tailfindr",
+            "plots",
+            "compare_polya_tails_len_bins.html"
+            ),
+        expand(os.path.join(
+            "data",
+            "{sample}",
+            "tailfindr",
+            "plots",
+            "polya_tails_len_bins.html"
+            ), sample=list(config["samples"].keys())),
+        expand(os.path.join(
+            "data",
+            "{sample}",
+            "flair",
+            "pass_catenated.isoform.read.map.txt",
+            ), sample=list(config["samples"].keys())),
+
+
+rule bins_tailfindr:
+    """
+    Generate a binned histogram of two samples and their distributions
+    of polyA tails.
+    """
+    input:
+        samples_guppy = expand(
+            os.path.join(
+                "data",
+                "{sample}",
+                "guppy_basecall",
+                "sequencing_summary.txt",
+                ),
+            sample=list(config["samples"].keys())
+            ),
+        samples_tailfindr = expand(
+            os.path.join(
+                "data",
+                "{sample}",
+                "tailfindr",
+                "polya_tails.csv",
+                ),
+            sample=list(config["samples"].keys())
+            ),
+    params:
+        samples_id = list(config["samples"].keys()),
+    output:
+        fig_html = os.path.join(
+            "data",
+            "comparative",
+            "tailfindr",
+            "plots",
+            "compare_polya_tails_len_bins.html"
+            ),
+        fig_svg = os.path.join(
+            "data",
+            "comparative",
+            "tailfindr",
+            "plots",
+            "compare_polya_tails_len_bins.svg"
+            ),
+    log:
+        os.path.join("logs", "comparative.log")
+    conda:
+        os.path.join("..", "envs", "environment.yaml")
+    resources:
+        cpus = 4,
+        time_limit = 1200,
+        mem_mb = 32000,
+    script:
+        "bin/binned_tailfindr.py"
+

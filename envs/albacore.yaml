@@ -1,0 +1,7 @@
+name: albacore
+prefix: envs/albacore
+channels:
+  - defaults
+  - bioconda
+dependencies:
+  - python=3.6.*

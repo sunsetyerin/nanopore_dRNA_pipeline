@@ -1,0 +1,33 @@
+name: direct_rna
+prefix: envs/direct_rna
+channels:
+  - defaults
+  - bioconda
+  - conda-forge
+  - plotly
+  - r
+  - hcc
+dependencies:
+  - python>=3.7.3
+  - snakemake-minimal>=5.5.4
+  - numpy>=1.16.4
+  - pandas>=0.25.3
+  - plotly::plotly>=4.9.0
+  - plotly::python-kaleido>=0.0.1
+  - pydot>=1.4.1
+  - pyyaml==5.2
+  - r>=3.6
+  - r-devtools>=2.0.2
+  - r-mnormt>=1.5_5
+  - r-tailfindr>=1.2
+  - hdf5>=1.10.4
+  - libiconv>=1.15
+  - coreutils>=8.31
+
+  - nanofilt>=2.7.0
+  - minimap2>=2.17
+  - samtools>=1.10
+  - jvarkit-sam2tsv>=1.0
+  - openjdk
+  - h5py>=2.10.0
+  - scikit-learn>=0.23.1
